@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import ChatBox from "./ChatBox";
+import "./App.css";
 
-function App() {
+const App = () => {
+  const [chatBoxes, setChatBoxes] = useState([[]]);
+
+  const handleAddChatBox = () => {
+    setChatBoxes([...chatBoxes, []]);
+  };
+
+  const handleSetMessages = (index, updatedMessages) => {
+    const updatedChatBoxes = chatBoxes.map((chatBox, chatBoxIndex) =>
+      chatBoxIndex === index ? updatedMessages : chatBox
+    );
+    setChatBoxes(updatedChatBoxes);
+  };
+
+  const handleCloseChatBox = (index) => {
+    const updatedChatBoxes = chatBoxes.filter(
+      (_, chatBoxIndex) => chatBoxIndex !== index
+    );
+    setChatBoxes(updatedChatBoxes);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <button className="add-button" onClick={handleAddChatBox}>
+        Add Chat Box
+      </button>
+      <div className="boxes">
+        {chatBoxes.map((messages, index) => (
+          <ChatBox
+            key={index}
+            messages={messages}
+            setMessages={(updatedMessages) =>
+              handleSetMessages(index, updatedMessages)
+            }
+            onClose={() => handleCloseChatBox(index)}
+          />
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
